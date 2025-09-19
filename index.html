@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PERSON FACTS</title>
+    <style>
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f5f6fa;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        h1 {
+            color: #222;
+            margin-bottom: 24px;
+            font-weight: 600;
+        }
+        form {
+            background: #fff;
+            padding: 24px 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            min-width: 260px;
+        }
+        label {
+            font-size: 1rem;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        input[type="text"] {
+            padding: 8px 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        input[type="text"]:focus {
+            border-color: #888;
+            outline: none;
+        }
+        button[type="submit"] {
+            padding: 10px 0;
+            background: #222;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 500;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button[type="submit"]:hover {
+            background: #444;
+        }
+        .hello-box {
+            margin-top: 24px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 18px 22px;
+            color: #222;
+            font-size: 1.08rem;
+            min-width: 260px;
+            text-align: center;
+            border: 1px solid #eee;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Hello World</h1>
+    <form id="personForm">
+        <div>
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+        <div>
+            <label for="country">Country</label>
+            <input type="text" id="country" name="country" required>
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+    <div id="helloBox" class="hello-box"></div>
+    <script>
+
+        //based on a country name, give two fun facts for the person about its country
+        function getCountryFacts(name, country) {
+          const url = "http://localhost:3000/facts?name=" + name + "&country=" + country;
+
+          return fetch(url).then(res => res.text())
+        }
+
+        const form = document.getElementById('personForm');
+        const helloBox = document.getElementById('helloBox');
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('name').value.trim();
+            const country = document.getElementById('country').value.trim();
+            if (name && country) {
+                getCountryFacts(name, country).then(facts => {
+                    helloBox.textContent = `Hello ${name}, you are from ${country}. Here are some facts about your country: ${facts}`;
+                    helloBox.style.display = 'block';
+                }).catch(() => {
+                    helloBox.textContent = `Hello ${name}, you are from ${country}. Sorry, could not fetch facts right now.`;
+                    helloBox.style.display = 'block';
+                });
+            } else {
+                helloBox.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
